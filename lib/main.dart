@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:webmp3/screens/homepage.dart';
+import 'package:webmp3/service/httpCert.dart';
 
 void main() {
+  HttpOverrides.global = new MyHttpOverrides();
   runApp(const MyApp());
 }
 

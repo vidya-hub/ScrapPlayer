@@ -1,10 +1,12 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:webmp3/models/SongModel.dart';
 import 'package:webmp3/models/gridMusicModel.dart';
 import 'package:webmp3/service/getAlbumMusicList.dart';
+import 'package:webmp3/service/getAudioFilePath.dart';
 
 class AlbumPage extends StatefulWidget {
   GridMusicModel albumModel;
@@ -18,18 +20,14 @@ class AlbumPage extends StatefulWidget {
 }
 
 class _AlbumPageState extends State<AlbumPage> {
-  bool isPlaying = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size(50, 70),
-        child: AppBar(
-          backgroundColor: Colors.green,
-          centerTitle: true,
-          title: Text(
-            widget.albumModel.movieName ?? "",
-          ),
+      appBar: AppBar(
+        backgroundColor: Colors.green,
+        centerTitle: true,
+        title: Text(
+          widget.albumModel.movieName ?? "",
         ),
       ),
       body: ListView(
@@ -82,6 +80,7 @@ class _AlbumPageState extends State<AlbumPage> {
                         int index,
                       ) {
                         SongModel? songModel = snapshot.data?[index];
+                        log(songModel?.songLink ?? "");
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 5),
                           child: Container(
@@ -116,21 +115,10 @@ class _AlbumPageState extends State<AlbumPage> {
                                     children: [
                                       IconButton(
                                         onPressed: () async {
-                                          log("Here");
-                                          // if (isPlaying) {
-                                          //   await AudioPlayer().stop();
-                                          // } else {
-
-                                          // }
-                                          // setState(() {
-                                          //   isPlaying = !isPlaying;
-                                          // });
-
-                                          await AudioPlayer()
-                                              .play(songModel?.songLink ?? "")
-                                              .catchError((onError) {
-                                            log(onError.toString());
-                                          });
+                                          File? _getFileString = await getFile(
+                                            songModel as SongModel,
+                                          );
+                                          log(_getFileString?.path ?? "");
                                         },
                                         icon: const Icon(
                                           Icons.play_arrow,
